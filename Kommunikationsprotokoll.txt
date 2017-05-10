@@ -5,6 +5,7 @@ minsize:              2 Byte
 maxsize:      4.161.665 Byte
 Default Port:     42042
 Strings:          UTF-8 (nicht nullterminiert)
+Boolean:              1 Byte (0 = false, not 0 = true)
 
     0        1        2        3
 +--------+--------+--------+--------+
@@ -28,8 +29,8 @@ FIELD DESCRIPTION
 +-.-.-.-.-.-.-.-.-+
 
 E -> Encryption Flag (1 bit)
-     0 nicht verschlüsselt
-     1 verschlüsselt
+     0 nicht verschlÃ¼sselt
+     1 verschlÃ¼sselt
 
 R -> Response Flag (1 bit)
      0 bei Anfrage
@@ -58,9 +59,9 @@ MESSAGETYPE -> (6 bit)
      17 Blackboard existiert schon (0 parameters)
      18 Blackboard ist leer (0 parameters)
      19 Blackboard existiert nicht (0 parameters)
-     33 Verschlüsselung aktiviert (1 parameters)
-     34 Verschlüsselung nicht aktiviert (0 parameters)
-     62 Anfrage nicht unterstützt (0 parameters)
+     33 VerschlÃ¼sselung aktiviert (1 parameters)
+     34 VerschlÃ¼sselung nicht aktiviert (0 parameters)
+     62 Anfrage nicht unterstÃ¼tzt (0 parameters)
      63 Interner Fehler (0 parameters)
 
 - #PARAM -
@@ -82,10 +83,10 @@ NUMPARAMS -> Anzahl der Parameter (8 bit)
 | __________PARAMLENGTH__________ |
 +-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-+
 
-PARAMLENGTH -> Länge des Parameters (16 bit LE)
+PARAMLENGTH -> LÃ¤nge des Parameters (16 bit LE)
      minvalue: 0
      maxvalue: 32767
-     Definiert die Länge des nachfolgenden "opt (varlength) PARAMCONTENT" Feldes
+     Definiert die LÃ¤nge des nachfolgenden "opt (varlength) PARAMCONTENT" Feldes
 
 - opt (varlength) PARAMCONTENT -
 
@@ -93,26 +94,26 @@ PARAMLENGTH -> Länge des Parameters (16 bit LE)
 | PARAMCONTENT__
 +-.-.-.-.-.-.-.-...
 
-PARAMCONTENT -> Inhalt des Parameters (beliebige Länge)
-     Länge in vorherigem "opt PARAMLENGTH" Feld spezifiziert
+PARAMCONTENT -> Inhalt des Parameters (beliebige LÃ¤nge)
+     LÃ¤nge in vorherigem "opt PARAMLENGTH" Feld spezifiziert
 
-- VERSCHLÜSSELUNG -
+- VERSCHLÃœSSELUNG -
 
-Das erste Byte wird nicht verschlüsselt, nur der Rest der Anfrage.
-Durch AES werden Anfragen auf n*16+1 Byte mit Zufallsdaten aufgefüllt, Datenmüll am Ende spielt für das Protokoll keine Rolle.
+Das erste Byte wird nicht verschlÃ¼sselt, nur der Rest der Anfrage.
+Durch AES werden Anfragen auf n*16+1 Byte mit Zufallsdaten aufgefÃ¼llt, DatenmÃ¼ll am Ende spielt fÃ¼r das Protokoll keine Rolle.
 
 Client bekommt public RSA key des Servers.
 Server hat einen private RSA key.
 
-ENCRYPTION-FLAG wird gesetzt, sobald Daten mit AES verschlüsselt versendet werden.
-Server meldet Antwort 34 falls Client das Flag setzt, aber die Verschlüsselung nicht initiiert hat.
-Sobald Client Verschlüsselung initiiert hat antwortet Server immer verschlüsselt, auch wenn Client unverschlüsselte Anfragen stellt.
+ENCRYPTION-FLAG wird gesetzt, sobald Daten mit AES verschlÃ¼sselt versendet werden.
+Server meldet Antwort 34 falls Client das Flag setzt, aber die VerschlÃ¼sselung nicht initiiert hat.
+Sobald Client VerschlÃ¼sselung initiiert hat antwortet Server immer verschlÃ¼sselt, auch wenn Client unverschlÃ¼sselte Anfragen stellt.
 
 Aufbau einer Verbindung:
-- Client sendet Anfrage 33 mit public RSA key des Servers verschlüsselt, Parameter ist ein key für die Symmetrische Verschlüsselung (AES)
-- Server antwortet mit 33 bei Akzeptanz (bereits symmetrisch verschlüsselt)
-- Server antwortet mit 34 falls Verschlüsselung nicht unterstützt oder Fehler (unverschlüsselt)
+- Client sendet Anfrage 33 mit public RSA key des Servers verschlÃ¼sselt, Parameter ist ein key fÃ¼r die Symmetrische VerschlÃ¼sselung (AES)
+- Server antwortet mit 33 bei Akzeptanz (bereits symmetrisch verschlÃ¼sselt)
+- Server antwortet mit 34 falls VerschlÃ¼sselung nicht unterstÃ¼tzt oder Fehler (unverschlÃ¼sselt)
 
 Abbau einer Verbindung:
-- Client sendet Anfrage 34 (symmetrisch verschlüsselt)
-- Server antwortet mit 34 egal ob Verschlüsselung bereits aktiviert wurde oder nicht (unverschlüsselt)
+- Client sendet Anfrage 34 (symmetrisch verschlÃ¼sselt)
+- Server antwortet mit 34 egal ob VerschlÃ¼sselung bereits aktiviert wurde oder nicht (unverschlÃ¼sselt)
