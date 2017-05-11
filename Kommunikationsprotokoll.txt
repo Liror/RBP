@@ -39,14 +39,14 @@ R -> Response Flag (1 bit)
 bei Anfrage
 MESSAGETYPE -> (6 bit)
      0 DO NOTHING (0 parameters)
-     1 CREATE (1 parameters)
-     2 DISPLAY (2 parameters)
-     3 READ (1 parameters)
-     4 CLEAR (1 parameters)
-     5 STATUS (1 parameter)
-     6 DELETE (1 parameters)
+     1 CREATE (1 parameters -> BLACKBOARD_NAME)
+     2 DISPLAY (2 parameters -> BLACKBOARD_NAME, MESSAGE)
+     3 READ (1 parameters -> BLACKBOARD_NAME)
+     4 CLEAR (1 parameters -> BLACKBOARD_NAME)
+     5 STATUS (1 parameter -> BLACKBOARD_NAME)
+     6 DELETE (1 parameters -> BLACKBOARD_NAME)
      7 DELETEALL (0 parameters)
-     33 ENCRYPT-REQUEST (1 parameters)
+     33 ENCRYPT-REQUEST (1 parameters -> 32B_AES_KEY)
      34 DISABLE-ENCRYPTION (0 parameters)
 
 bei Antwort
@@ -54,12 +54,12 @@ MESSAGETYPE -> (6 bit)
      0 DID NOTHING (0 parameters)
      1 Blackboard erfolgreich erstellt (0 parameters)
      2 Blackboard erfolgreich geleert (0 parameters)
-     3 Status erfolgreich gelesen (1 parameters)
-     4 Nachricht erfolgreich gelesen (1 parameters)
+     3 Status erfolgreich gelesen (1 parameters -> BLACKBOARD_EMPTY)
+     4 Nachricht erfolgreich gelesen (1 parameters -> MESSAGE)
      17 Blackboard existiert schon (0 parameters)
      18 Blackboard ist leer (0 parameters)
      19 Blackboard existiert nicht (0 parameters)
-     33 Verschlüsselung aktiviert (1 parameters)
+     33 Verschlüsselung aktiviert (1 parameters -> 32B_AES_KEY)
      34 Verschlüsselung nicht aktiviert (0 parameters)
      62 Anfrage nicht unterstützt (0 parameters)
      63 Interner Fehler (0 parameters)
@@ -100,7 +100,7 @@ PARAMCONTENT -> Inhalt des Parameters (beliebige Länge)
 - VERSCHLÜSSELUNG -
 
 Das erste Byte wird nicht verschlüsselt, nur der Rest der Anfrage.
-Durch AES werden Anfragen auf n*16+1 Byte mit Zufallsdaten aufgefüllt, Datenmüll am Ende spielt für das Protokoll keine Rolle.
+Durch 256bit AES werden Anfragen auf n*16+1 Byte mit Zufallsdaten aufgefüllt, Datenmüll am Ende spielt für das Protokoll keine Rolle.
 
 Client bekommt public RSA key des Servers.
 Server hat einen private RSA key.
@@ -111,7 +111,7 @@ Sobald Client Verschlüsselung initiiert hat antwortet Server immer verschlüsse
 
 Aufbau einer Verbindung:
 - Client sendet Anfrage 33 mit public RSA key des Servers verschlüsselt, Parameter ist ein key für die Symmetrische Verschlüsselung (AES)
-- Server antwortet mit 33 bei Akzeptanz (bereits symmetrisch verschlüsselt)
+- Server antwortet mit 33 bei Akzeptanz, Key wird zurück gesendet (bereits symmetrisch verschlüsselt)
 - Server antwortet mit 34 falls Verschlüsselung nicht unterstützt oder Fehler (unverschlüsselt)
 
 Abbau einer Verbindung:
