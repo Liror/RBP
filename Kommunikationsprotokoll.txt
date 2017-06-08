@@ -1,6 +1,15 @@
 Remote Blackboard Protocol RBP v1 (auf TCP aufbauend)
 von Lukas Rauch
 
+- START Fehlernotiz -
+
+Auf Grund eines Fehlers in der v1 Protokolldefinition wird Verschlüsselung nicht unterstützt. Das entsprechende Flag ist also immer auf 0 zu setzen, zusätzlich dürfen die Requests 'ENCRYPT-REQUEST' und 'DISABLE-ENCRYPTION' wie auch die Antworten '33' und '34' nicht verwendet werden. Für Kompatibilität mit zukünfitgen Versionen werden diese in der Definition dennoch beibehalten.
+Die Ursache für den Fehler ist ein fehlendes Längenfeld im Protokoll. Um trotzdem die Länge eines Paketes bestimmen zu können um dieses auf Vollständigkeit zu prüfen muss ein Paket komplett durchgeparst werden, dies wäre bei verschlüsselten Daten nicht möglich.
+
+Der Fehler wird in v2 des Protokolls behoben. Um die Versionen unterscheiden zu können ist in v2 das Encryption Flag immer auf 1 zu setzen. Zusätzlich wird ein weiteres Byte mit einem neuen Encryption Flag und einer Versionsnummer hinzugefügt. Ebenfalls wird ein 32bit Feld für die Paketlänge angefügt. v2 ist damit abwärtskompatibel zu v1. Alle Implementationen von v2 müssen auch v1 unterstützen können. Andersherum ist dies nicht möglich, v1 Anwendungen erkennen die Probleme allerdings direkt durch ein gesetztes Encryption Flag.
+
+- ENDE Fehlernotiz -
+
 minsize:              2 Byte
 maxsize:      4.161.665 Byte
 Default Port:     42042
