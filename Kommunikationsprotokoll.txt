@@ -15,6 +15,7 @@ maxsize:      4.161.665 Byte
 Default Port:     42042
 Strings:          UTF-8 (nicht nullterminiert)
 Boolean:              1 Byte (0 = false, not 0 = true)
+Integer:              4 Byte (LE)
 
     0        1        2        3
 +--------+--------+--------+--------+
