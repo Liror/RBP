@@ -85,7 +85,7 @@ MESSAGETYPE -> (6 bit)
 
 NUMPARAMS -> Anzahl der Parameter (8 bit)
      minvalue: 0
-     maxvalue: 127
+     maxvalue: 255
      Definiert die Anzahl der "opt PARAMLENGTH" und "opt (varlength) PARAMCONTENT" Felder
 
 - opt PARAMLENGTH -
@@ -97,7 +97,7 @@ NUMPARAMS -> Anzahl der Parameter (8 bit)
 
 PARAMLENGTH -> Länge des Parameters (16 bit LE)
      minvalue: 0
-     maxvalue: 32767
+     maxvalue: 65535
      Definiert die Länge des nachfolgenden "opt (varlength) PARAMCONTENT" Feldes
 
 - opt (varlength) PARAMCONTENT -
